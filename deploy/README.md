@@ -27,8 +27,9 @@ releases-site (nginx)  <--  the Cloudflare tunnel of devo-site  <--  visitors
 
 ## Each release
 
-`python produtos/releases/publica.py <project> <version>` (only on the user's "publica"). releases-sync puts the new
-site in place within 15 minutes (`docker logs releases-sync`). To go back: point `current` at an older folder in
+`python produtos/releases/publica.py <project> <version>` (only on the user's "publica"). With `VPS_SSH` in the
+`.env`, publica.py runs one round of releases-sync over SSH right after the release, so the new site is live before
+the Discord post; otherwise releases-sync puts it in place within 15 minutes (`docker logs releases-sync`). To go back: point `current` at an older folder in
 `releases/`.
 
 ## What the server keeps
