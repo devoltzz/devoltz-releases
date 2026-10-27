@@ -20,9 +20,10 @@ releases-site (nginx)  <--  the Cloudflare tunnel of devo-site  <--  visitors
 4. The tunnel: in Cloudflare, add the public hostname `releases.devoltz.party` to the tunnel of the `devo-site`
    stack, pointing at `http://releases-site:80`. The zone settings the Doctor needs (Rocket Loader off, SSL Full)
    already hold.
-5. Discord: in the forum channel of the maps, Integrations > Webhooks > New Webhook; put its URL in the `.env`
-   (`DISCORD_WEBHOOK_URL`). With Developer Mode on, right-click each map's thread > Copy Thread ID, into the
-   `discord_thread_id` of that map's `port/releases/mapa.json`.
+5. Discord: one thread for every release. In its forum channel, Integrations > Webhooks > New Webhook; put its URL
+   in the `.env` (`DISCORD_WEBHOOK_URL`). With Developer Mode on, right-click the releases thread > Copy Thread ID
+   into `DISCORD_THREAD_ID`, and each map's notification role (Server Settings > Roles > right-click > Copy Role ID)
+   into the `discord_cargo_id` of that map's `port/releases/mapa.json`. The post pings only that role.
 
 ## Each release
 
