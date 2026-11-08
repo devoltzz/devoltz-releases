@@ -5,7 +5,8 @@ into WWW/releases/<tag> and points WWW/current at it in one step (the old site s
 releases stay, for going back by hand). Standard library only; no token: the API is public and asked 4 times an hour.
 
 Environment: REPOSITORY (owner/name), WWW (/srv/www), INTERVAL (900), KEEP (3), API (https://api.github.com).
-  python sync.py [--once]
+SITES (owner/name=folder,owner/name=folder): several sites in one process, in place of REPOSITORY and WWW.
+  python sync.py [--once] [--only=<owner/name>]
 """
 import hashlib
 import json
@@ -26,7 +27,7 @@ AGENT = 'devo-sync'
 
 
 def log(text):
-    print(time.strftime('%Y-%m-%d %H:%M:%S ') + text, flush=True)
+    print(time.strftime('%Y-%m-%d %H:%M:%S ') + REPOSITORY.split('/')[-1] + ': ' + text, flush=True)
 
 
 def get(url, binary=False):
@@ -110,13 +111,26 @@ def once():
     return tag
 
 
+def sites(text=None):
+    """[(repository, folder)] of SITES, or the one of REPOSITORY and WWW."""
+    text = os.environ.get('SITES', '') if text is None else text
+    pairs = [p.strip().split('=', 1) for p in text.split(',') if p.strip()]
+    return [(r.strip(), w.strip()) for r, w in pairs] or [(REPOSITORY, WWW)]
+
+
 def main(argv):
-    log('devo-sync: %s every %d s into %s' % (REPOSITORY, INTERVAL, WWW))
+    global REPOSITORY, WWW
+    only = [a.split('=', 1)[1] for a in argv if a.startswith('--only=')]
+    todo = [s for s in sites() if not only or s[0] in only]
+    if not todo:
+        print('no site %s' % only[0], flush=True)
+        return 2
     while True:
-        try:
-            once()
-        except Exception as e:  # noqa: BLE001 -- the next check tries again; the site already served keeps serving
-            log('check failed: %s: %s' % (type(e).__name__, e))
+        for REPOSITORY, WWW in todo:
+            try:
+                once()
+            except Exception as e:  # noqa: BLE001 -- the next check tries again; the site already served keeps serving
+                log('check failed: %s: %s' % (type(e).__name__, e))
         if '--once' in argv:
             return 0
         time.sleep(INTERVAL)
