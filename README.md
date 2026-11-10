@@ -1,6 +1,6 @@
 # devoltz-releases
 
-The site of [releases.devoltz.party](https://releases.devoltz.party): the changelog, the decisions and the downloads
+The site of [releases.devoltz.party](https://releases.devoltz.party): the changelog and the downloads
 of every Warcraft III map ported to Reforged by devoltz.
 
 Each GitHub release here carries one build of the site (`site-<tag>.zip` and its `.sha256`); the host picks up the
